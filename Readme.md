@@ -1,9 +1,9 @@
-how to run the scripts
-c:
+# how to run the scripts
+## c:
 cc -ansi algorithms.c -o algorithms -lm && ./algorithms
 
-R:
+## R:
 Rscript algorithms.R
 
-python:
+## python:
 python3 algorithms.py
