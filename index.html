@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Algorithms Lab</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent-2: #38bdf8;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      padding: 28px 20px 12px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 900px;
+    }
+
+    .layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+
+    .desc {
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.12s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button.primary { background: var(--accent); color: #06240f; border: none; }
+    button.secondary { background: var(--accent-2); color: #082032; border: none; }
+
+    .output {
+      margin-top: 14px;
+      padding: 12px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      min-height: 70px;
+      font-family: "Courier New", monospace;
+      font-size: 0.92rem;
+    }
+
+    .steps {
+      margin-top: 10px;
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      background: rgba(2, 6, 23, 0.75);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px dashed #334155;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 30px;
+      color: var(--muted);
+    }
+
+    code.inline {
+      background: #0b1220;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid #223047;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Interactive Algorithms Lab</h1>
+    <div class="subtitle">
+      A browser-based learning file built from your pseudocode topics. Each section behaves like a small simulator or calculator so learners can change inputs and see how the algorithm works.
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <h2>1) Bubble Sort Simulator</h2>
+      <div class="desc">Enter comma-separated numbers and watch the passes that gradually sort the list.</div>
+      <label for="sortInput">Numbers</label>
+      <input id="sortInput" value="5, 2, 9, 1, 3" />
+      <div class="btn-row">
+        <button class="primary" onclick="runBubbleSort()">Run Bubble Sort</button>
+      </div>
+      <div class="output" id="sortOutput"></div>
+      <div class="steps" id="sortSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>2) Binary Search Calculator</h2>
+      <div class="desc">Search for a target inside a sorted list and inspect the midpoints visited.</div>
+      <label for="searchArray">Sorted numbers</label>
+      <input id="searchArray" value="1, 3, 5, 7, 9, 11, 15" />
+      <label for="searchTarget">Target</label>
+      <input id="searchTarget" value="9" />
+      <div class="btn-row">
+        <button class="primary" onclick="runBinarySearch()">Search</button>
+      </div>
+      <div class="output" id="searchOutput"></div>
+      <div class="steps" id="searchSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>3) Fibonacci Calculator</h2>
+      <div class="desc">Compute Fibonacci using dynamic programming so learners see the table being built.</div>
+      <label for="fibN">n</label>
+      <input id="fibN" type="number" min="0" value="10" />
+      <div class="btn-row">
+        <button class="primary" onclick="runFibonacci()">Compute Fibonacci</button>
+      </div>
+      <div class="output" id="fibOutput"></div>
+      <div class="steps" id="fibSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>4) KMP String Matcher</h2>
+      <div class="desc">Search for a pattern in text and inspect the LPS table used by Knuth-Morris-Pratt.</div>
+      <label for="kmpText">Text</label>
+      <textarea id="kmpText">ababcabcabababd</textarea>
+      <label for="kmpPattern">Pattern</label>
+      <input id="kmpPattern" value="ababd" />
+      <div class="btn-row">
+        <button class="primary" onclick="runKMP()">Find Pattern</button>
+      </div>
+      <div class="output" id="kmpOutput"></div>
+      <div class="steps" id="kmpSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>5) Linear Regression Calculator</h2>
+      <div class="desc">Enter X and Y values and get the slope, intercept, and predictions using the simple formula.</div>
+      <label for="lrX">X values</label>
+      <input id="lrX" value="1,2,3,4,5" />
+      <label for="lrY">Y values</label>
+      <input id="lrY" value="2,4,5,4,5" />
+      <div class="btn-row">
+        <button class="primary" onclick="runLinearRegression()">Train Linear Regression</button>
+      </div>
+      <div class="output" id="lrOutput"></div>
+      <div class="steps" id="lrSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>6) Logistic Regression Probability Demo</h2>
+      <div class="desc">This calculator uses <code class="inline">sigmoid(b + w1x1 + w2x2)</code> so learners can understand probabilities and classification.</div>
+      <div class="row">
+        <div>
+          <label for="logX1">x1</label>
+          <input id="logX1" type="number" step="any" value="2" />
+        </div>
+        <div>
+          <label for="logX2">x2</label>
+          <input id="logX2" type="number" step="any" value="1" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="logW1">w1</label>
+          <input id="logW1" type="number" step="any" value="1.2" />
+        </div>
+        <div>
+          <label for="logW2">w2</label>
+          <input id="logW2" type="number" step="any" value="-0.8" />
+        </div>
+      </div>
+      <label for="logB">bias</label>
+      <input id="logB" type="number" step="any" value="0.4" />
+      <div class="btn-row">
+        <button class="primary" onclick="runLogisticDemo()">Compute Probability</button>
+      </div>
+      <div class="output" id="logOutput"></div>
+      <div class="steps" id="logSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>7) Dijkstra Shortest Path</h2>
+      <div class="desc">Use a small weighted graph and compute shortest distances from a starting node.</div>
+      <label for="dijkstraGraph">Graph edges (one per line: from,to,weight)</label>
+      <textarea id="dijkstraGraph">A,B,4
+A,C,2
+B,C,1
+B,D,5
+C,D,8
+C,E,10
+D,E,2
+D,Z,6
+E,Z,3</textarea>
+      <div class="row">
+        <div>
+          <label for="dijkstraStart">Start node</label>
+          <input id="dijkstraStart" value="A" />
+        </div>
+        <div>
+          <label for="dijkstraEnd">Optional target node</label>
+          <input id="dijkstraEnd" value="Z" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="primary" onclick="runDijkstra()">Run Dijkstra</button>
+      </div>
+      <div class="output" id="dijkstraOutput"></div>
+      <div class="steps" id="dijkstraSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>8) Minimum Spanning Tree: Kruskal / Prim</h2>
+      <div class="desc">Experiment with the same graph using two classic minimum spanning tree algorithms.</div>
+      <label for="mstGraph">Undirected edges (one per line: from,to,weight)</label>
+      <textarea id="mstGraph">A,B,1
+A,C,3
+B,C,3
+B,D,6
+C,D,4
+C,E,2
+D,E,5</textarea>
+      <label for="primStart">Prim start node</label>
+      <input id="primStart" value="A" />
+      <div class="btn-row">
+        <button class="primary" onclick="runKruskal()">Run Kruskal</button>
+        <button class="secondary" onclick="runPrim()">Run Prim</button>
+      </div>
+      <div class="output" id="mstOutput"></div>
+      <div class="steps" id="mstSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>9) Neural Network Playground</h2>
+      <div class="desc">A tiny two-input, one-hidden-layer neural network demo. Adjust inputs, weights, and biases to see forward propagation step by step.</div>
+      <div class="row">
+        <div>
+          <label for="nnX1">Input x1</label>
+          <input id="nnX1" type="number" step="any" value="1" />
+        </div>
+        <div>
+          <label for="nnX2">Input x2</label>
+          <input id="nnX2" type="number" step="any" value="0" />
+        </div>
+      </div>
+
+      <label>Hidden Neuron 1</label>
+      <div class="row">
+        <div><input id="nnW11" type="number" step="any" value="0.8" placeholder="w11" /></div>
+        <div><input id="nnW12" type="number" step="any" value="-0.4" placeholder="w12" /></div>
+      </div>
+      <label for="nnB1">Bias b1</label>
+      <input id="nnB1" type="number" step="any" value="0.1" />
+
+      <label>Hidden Neuron 2</label>
+      <div class="row">
+        <div><input id="nnW21" type="number" step="any" value="0.3" placeholder="w21" /></div>
+        <div><input id="nnW22" type="number" step="any" value="0.9" placeholder="w22" /></div>
+      </div>
+      <label for="nnB2">Bias b2</label>
+      <input id="nnB2" type="number" step="any" value="-0.2" />
+
+      <label>Output Neuron</label>
+      <div class="row">
+        <div><input id="nnWO1" type="number" step="any" value="1.1" placeholder="wo1" /></div>
+        <div><input id="nnWO2" type="number" step="any" value="-0.7" placeholder="wo2" /></div>
+      </div>
+      <label for="nnBO">Output bias bo</label>
+      <input id="nnBO" type="number" step="any" value="0.05" />
+
+      <label for="nnActivation">Activation</label>
+      <select id="nnActivation">
+        <option value="sigmoid">Sigmoid</option>
+        <option value="relu">ReLU</option>
+        <option value="tanh">Tanh</option>
+      </select>
+
+      <div class="btn-row">
+        <button class="primary" onclick="runNeuralNetwork()">Run Neural Network</button>
+      </div>
+      <div class="output" id="nnOutput"></div>
+      <div class="steps" id="nnSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>10) Stack Simulator</h2>
+      <div class="desc">Learn the stack data structure interactively using push and pop operations.</div>
+      <label for="stackValue">Value</label>
+      <input id="stackValue" value="10" />
+      <div class="btn-row">
+        <button class="primary" onclick="stackPush()">Push</button>
+        <button class="secondary" onclick="stackPop()">Pop</button>
+      </div>
+      <div class="output" id="stackOutput"></div>
+      <div class="steps" id="stackSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>11) Queue Simulator</h2>
+      <div class="desc">Practice queue operations with enqueue and dequeue.</div>
+      <label for="queueValue">Value</label>
+      <input id="queueValue" value="25" />
+      <div class="btn-row">
+        <button class="primary" onclick="queueEnqueue()">Enqueue</button>
+        <button class="secondary" onclick="queueDequeue()">Dequeue</button>
+      </div>
+      <div class="output" id="queueOutput"></div>
+      <div class="steps" id="queueSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>12) Linked List Builder</h2>
+      <div class="desc">Add nodes to a singly linked list and remove the head node.</div>
+      <label for="listValue">Node value</label>
+      <input id="listValue" value="A" />
+      <div class="btn-row">
+        <button class="primary" onclick="listAppend()">Append Node</button>
+        <button class="secondary" onclick="listRemoveHead()">Remove Head</button>
+      </div>
+      <div class="output" id="listOutput"></div>
+      <div class="steps" id="listSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>13) Binary Search Tree Playground</h2>
+      <div class="desc">Insert values into a binary search tree and view traversals.</div>
+      <label for="bstValue">Value</label>
+      <input id="bstValue" type="number" value="50" />
+      <div class="btn-row">
+        <button class="primary" onclick="bstInsertValue()">Insert</button>
+        <button class="secondary" onclick="bstReset()">Reset Tree</button>
+      </div>
+      <div class="output" id="bstOutput"></div>
+      <div class="steps" id="bstSteps"></div>
+    </section>
+
+    <section class="card">
+      <h2>14) Hash Table Demo</h2>
+      <div class="desc">Store key-value pairs in a simple hash table and inspect the bucket where each item lands.</div>
+      <div class="row">
+        <div>
+          <label for="hashKey">Key</label>
+          <input id="hashKey" value="name" />
+        </div>
+        <div>
+          <label for="hashValue">Value</label>
+          <input id="hashValue" value="Martin" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="primary" onclick="hashInsert()">Insert Pair</button>
+        <button class="secondary" onclick="hashLookup()">Lookup Key</button>
+      </div>
+      <div class="output" id="hashOutput"></div>
+      <div class="steps" id="hashSteps"></div>
+    </section>
+    <section class="card">
+  <h2>15) TOY Computer Simulator</h2>
+  <div class="desc">A tiny virtual machine simulator with 16 registers, 256 memory cells, a program counter, fetch-decode-execute logic, and the rule that R0 always stays zero.</div>
+
+  <label for="toyProgram">Program words (hex, one per line or separated by spaces)</label>
+  <textarea id="toyProgram">7105
+7203
+1312
+930A
+0000</textarea>
+
+  <div class="row">
+    <div>
+      <label for="toyMaxSteps">Max steps</label>
+      <input id="toyMaxSteps" type="number" min="1" value="50" />
+    </div>
+    <div>
+      <label for="toyInspectAddr">Inspect memory address</label>
+      <input id="toyInspectAddr" type="number" min="0" max="255" value="10" />
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="primary" onclick="runTOYProgram()">Run Program</button>
+    <button class="secondary" onclick="stepTOYProgram()">Single Step</button>
+    <button class="secondary" onclick="resetTOYProgram()">Reset</button>
+  </div>
+
+  <div class="output" id="toyOutput"></div>
+  <div class="steps" id="toySteps"></div>
+</section>
+  </main>
+
+  <footer>
+    Built with plain HTML, CSS, and JavaScript only. No external libraries.
+  </footer>
+
+  <script>
+    var stackData = [];
+    var stackHistory = [];
+    var queueData = [];
+    var queueHistory = [];
+    var linkedListData = [];
+    var linkedListHistory = [];
+    var bstRoot = null;
+    var bstHistory = [];
+    var hashTable = [[], [], [], [], []];
+    var hashHistory = [];
+    var toyMachine = null;
+    var toyHistory = [];
+
+    function setText(id, text) {
+      document.getElementById(id).textContent = text;
+    }
+
+    function parseNumberArray(text) {
+      return text
+        .split(',')
+        .map(function (x) { return x.trim(); })
+        .filter(function (x) { return x.length > 0; })
+        .map(Number)
+        .filter(function (x) { return !isNaN(x); });
+    }
+
+    function sigmoid(z) {
+      return 1 / (1 + Math.exp(-z));
+    }
+
+    function relu(z) {
+      return z > 0 ? z : 0;
+    }
+
+    function tanhActivation(z) {
+      var ez = Math.exp(z);
+      var enz = Math.exp(-z);
+      return (ez - enz) / (ez + enz);
+    }
+
+    function applyActivation(name, z) {
+      if (name === 'relu') return relu(z);
+      if (name === 'tanh') return tanhActivation(z);
+      return sigmoid(z);
+    }
+
+    function runBubbleSort() {
+      var arr = parseNumberArray(document.getElementById('sortInput').value);
+      var steps = [];
+      var i, j, temp;
+      for (i = 0; i < arr.length - 1; i++) {
+        for (j = 0; j < arr.length - i - 1; j++) {
+          if (arr[j] > arr[j + 1]) {
+            temp = arr[j];
+            arr[j] = arr[j + 1];
+            arr[j + 1] = temp;
+          }
+        }
+        steps.push('After pass ' + (i + 1) + ': ' + arr.join(', '));
+      }
+      setText('sortOutput', 'Sorted array: ' + arr.join(', '));
+      setText('sortSteps', steps.join(''));
+    }
+
+    function runBinarySearch() {
+      var arr = parseNumberArray(document.getElementById('searchArray').value);
+      var target = Number(document.getElementById('searchTarget').value);
+      var left = 0;
+      var right = arr.length - 1;
+      var steps = [];
+      var index = -1;
+      while (left <= right) {
+        var mid = Math.floor((left + right) / 2);
+        steps.push('left=' + left + ', right=' + right + ', mid=' + mid + ', value=' + arr[mid]);
+        if (arr[mid] === target) {
+          index = mid;
+          break;
+        }
+        if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+      }
+      setText('searchOutput', index >= 0 ? 'Found target at index ' + index + ' (position ' + (index + 1) + ')' : 'Target not found.');
+      setText('searchSteps', steps.join(''));
+    }
+
+    function runFibonacci() {
+      var n = Number(document.getElementById('fibN').value);
+      if (n < 0 || isNaN(n)) {
+        setText('fibOutput', 'Enter a valid non-negative integer.');
+        setText('fibSteps', '');
+        return;
+      }
+      if (n === 0) {
+        setText('fibOutput', 'F(0) = 0');
+        setText('fibSteps', 'DP table: [0]');
+        return;
+      }
+      var dp = [0, 1];
+      for (var i = 2; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+      }
+      setText('fibOutput', 'F(' + n + ') = ' + dp[n]);
+      setText('fibSteps', 'DP table: ' + dp.join(', '));
+    }
+
+    function computeLPS(pattern) {
+      var lps = new Array(pattern.length).fill(0);
+      var len = 0;
+      var i = 1;
+      while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+          len++;
+          lps[i] = len;
+          i++;
+        } else if (len !== 0) {
+          len = lps[len - 1];
+        } else {
+          lps[i] = 0;
+          i++;
+        }
+      }
+      return lps;
+    }
+
+    function runKMP() {
+      var text = document.getElementById('kmpText').value;
+      var pattern = document.getElementById('kmpPattern').value;
+      if (!pattern.length) {
+        setText('kmpOutput', 'Pattern cannot be empty.');
+        setText('kmpSteps', '');
+        return;
+      }
+      var lps = computeLPS(pattern);
+      var i = 0;
+      var j = 0;
+      var matches = [];
+      var steps = [];
+      while (i < text.length) {
+        steps.push('Compare text[' + i + ']=' + text[i] + ' with pattern[' + j + ']=' + pattern[j]);
+        if (text[i] === pattern[j]) {
+          i++;
+          j++;
+        }
+        if (j === pattern.length) {
+          matches.push(i - j);
+          steps.push('Match found at index ' + (i - j));
+          j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+          if (j !== 0) j = lps[j - 1];
+          else i++;
+        }
+      }
+      setText('kmpOutput', matches.length ? 'Pattern found at index/indices: ' + matches.join(', ') : 'No match found.');
+      setText('kmpSteps', 'LPS: [' + lps.join(', ') + ']' + steps.join(''));
+    }
+
+    function runLinearRegression() {
+      var X = parseNumberArray(document.getElementById('lrX').value);
+      var Y = parseNumberArray(document.getElementById('lrY').value);
+      if (X.length !== Y.length || X.length === 0) {
+        setText('lrOutput', 'X and Y must have the same non-zero length.');
+        setText('lrSteps', '');
+        return;
+      }
+      var n = X.length;
+      var xMean = X.reduce(function (a, b) { return a + b; }, 0) / n;
+      var yMean = Y.reduce(function (a, b) { return a + b; }, 0) / n;
+      var numerator = 0;
+      var denominator = 0;
+      for (var i = 0; i < n; i++) {
+        numerator += (X[i] - xMean) * (Y[i] - yMean);
+        denominator += (X[i] - xMean) * (X[i] - xMean);
+      }
+      var slope = numerator / denominator;
+      var intercept = yMean - slope * xMean;
+      var predictions = X.map(function (x) { return slope * x + intercept; });
+      setText('lrOutput', 'slope = ' + slope.toFixed(4) + 'intercept = ' + intercept.toFixed(4) + 'predictions = [' + predictions.map(function (v) { return v.toFixed(4); }).join(', ') + ']');
+      setText('lrSteps', 'x mean = ' + xMean.toFixed(4) + 'y mean = ' + yMean.toFixed(4) + 'numerator = ' + numerator.toFixed(4) + 'denominator = ' + denominator.toFixed(4));
+    }
+
+    function runLogisticDemo() {
+      var x1 = Number(document.getElementById('logX1').value);
+      var x2 = Number(document.getElementById('logX2').value);
+      var w1 = Number(document.getElementById('logW1').value);
+      var w2 = Number(document.getElementById('logW2').value);
+      var b = Number(document.getElementById('logB').value);
+      var z = b + w1 * x1 + w2 * x2;
+      var p = sigmoid(z);
+      var cls = p >= 0.5 ? 1 : 0;
+      setText('logOutput', 'z = ' + z.toFixed(4) + 'probability = ' + p.toFixed(4) + 'predicted class = ' + cls);
+      setText('logSteps', 'Formula:z = b + w1*x1 + w2*x2 sigmoid(z) = 1 / (1 + e^(-z))');
+    }
+
+    function parseEdgeList(text, directed) {
+      var lines = text.split('').map(function (x) { return x.trim(); }).filter(Boolean);
+      var graph = {};
+      lines.forEach(function (line) {
+        var parts = line.split(',').map(function (x) { return x.trim(); });
+        if (parts.length !== 3) return;
+        var from = parts[0];
+        var to = parts[1];
+        var weight = Number(parts[2]);
+        if (!graph[from]) graph[from] = [];
+        if (!graph[to]) graph[to] = [];
+        graph[from].push({ to: to, weight: weight });
+        if (!directed) graph[to].push({ to: from, weight: weight });
+      });
+      return graph;
+    }
+
+    function reconstructPath(previous, end) {
+      var path = [];
+      var current = end;
+      while (current != null) {
+        path.unshift(current);
+        current = previous[current];
+      }
+      return path;
+    }
+
+    function runDijkstra() {
+      var graph = parseEdgeList(document.getElementById('dijkstraGraph').value, false);
+      var start = document.getElementById('dijkstraStart').value.trim();
+      var end = document.getElementById('dijkstraEnd').value.trim();
+      var distances = {};
+      var previous = {};
+      var visited = {};
+      var steps = [];
+      Object.keys(graph).forEach(function (node) {
+        distances[node] = Infinity;
+        previous[node] = null;
+        visited[node] = false;
+      });
+      if (!graph[start]) {
+        setText('dijkstraOutput', 'Start node not found in graph.');
+        setText('dijkstraSteps', '');
+        return;
+      }
+      distances[start] = 0;
+      while (true) {
+        var current = null;
+        var best = Infinity;
+        Object.keys(graph).forEach(function (node) {
+          if (!visited[node] && distances[node] < best) {
+            best = distances[node];
+            current = node;
+          }
+        });
+        if (current === null) break;
+        visited[current] = true;
+        steps.push('Visit ' + current + ' with distance ' + distances[current]);
+        graph[current].forEach(function (edge) {
+          var newDist = distances[current] + edge.weight;
+          if (newDist < distances[edge.to]) {
+            distances[edge.to] = newDist;
+            previous[edge.to] = current;
+            steps.push('  Update ' + edge.to + ' to ' + newDist + ' via ' + current);
+          }
+        });};
+      var summary = 'Distances:' + Object.keys(distances).map(function (k) {
+        return k + ': ' + distances[k];
+      }).join('');
+      if (end && distances[end] !== undefined && distances[end] !== Infinity) {
+        summary += 'Path to ' + end + ': ' + reconstructPath(previous, end).join(' -> ');
+      }
+      setText('dijkstraOutput', summary);
+      setText('dijkstraSteps', steps.join(''));
+    }
+
+    function getUniqueEdges(raw) {
+      var lines = raw.split('').map(function (x) { return x.trim(); }).filter(Boolean);
+      var seen = {};
+      var edges = [];
+      lines.forEach(function (line) {
+        var parts = line.split(',').map(function (x) { return x.trim(); });
+        if (parts.length !== 3) return;
+        var a = parts[0];
+        var b = parts[1];
+        var w = Number(parts[2]);
+        var key = [a, b].sort().join('|');
+        if (!seen[key]) {
+          seen[key] = true;
+          edges.push({ from: a, to: b, weight: w });
+        }
+      });
+      return edges;
+    }
+
+    function makeSet(parent, rank, x) {
+      parent[x] = x;
+      rank[x] = 0;
+    }
+
+    function findSet(parent, x) {
+      if (parent[x] !== x) parent[x] = findSet(parent, parent[x]);
+      return parent[x];
+    }
+
+    function unionSet(parent, rank, x, y) {
+      var rootX = findSet(parent, x);
+      var rootY = findSet(parent, y);
+      if (rootX === rootY) return;
+      if (rank[rootX] < rank[rootY]) parent[rootX] = rootY;
+      else if (rank[rootX] > rank[rootY]) parent[rootY] = rootX;
+      else {
+        parent[rootY] = rootX;
+        rank[rootX]++;
+      }
+    }
+
+    function runKruskal() {
+      var raw = document.getElementById('mstGraph').value;
+      var edges = getUniqueEdges(raw).sort(function (a, b) { return a.weight - b.weight; });
+      var parent = {};
+      var rank = {};
+      var nodes = {};
+      var mst = [];
+      var total = 0;
+      var steps = [];
+      edges.forEach(function (e) { nodes[e.from] = true; nodes[e.to] = true; });
+      Object.keys(nodes).forEach(function (node) { makeSet(parent, rank, node); });
+      edges.forEach(function (e) {
+        if (findSet(parent, e.from) !== findSet(parent, e.to)) {
+          mst.push(e);
+          total += e.weight;
+          unionSet(parent, rank, e.from, e.to);
+          steps.push('Add ' + e.from + '-' + e.to + ' (' + e.weight + ')');
+        } else {
+          steps.push('Skip ' + e.from + '-' + e.to + ' (' + e.weight + ') because it forms a cycle');
+        }
+      });
+      setText('mstOutput', 'Kruskal MST:' + mst.map(function (e) { return e.from + '-' + e.to + ' (' + e.weight + ')'; }).join('') + 'Total weight = ' + total);
+      setText('mstSteps', steps.join(''));
+    }
+
+    function runPrim() {
+      var raw = document.getElementById('mstGraph').value;
+      var start = document.getElementById('primStart').value.trim();
+      var graph = parseEdgeList(raw, false);
+      if (!graph[start]) {
+        setText('mstOutput', 'Start node not found for Prim.');
+        setText('mstSteps', '');
+        return;
+      }
+      var visited = {};
+      var mst = [];
+      var total = 0;
+      var steps = [];
+      visited[start] = true;
+      while (Object.keys(visited).length < Object.keys(graph).length) {
+        var candidate = null;
+        Object.keys(visited).forEach(function (node) {
+          graph[node].forEach(function (edge) {
+            if (!visited[edge.to]) {
+              if (!candidate || edge.weight < candidate.weight) {
+                candidate = { from: node, to: edge.to, weight: edge.weight };
+              }
+            }
+          });
+        });
+        if (!candidate) break;
+        visited[candidate.to] = true;
+        mst.push(candidate);
+        total += candidate.weight;
+        steps.push('Add ' + candidate.from + '-' + candidate.to + ' (' + candidate.weight + ')');
+      }
+      setText('mstOutput', 'Prim MST from ' + start + ':' + mst.map(function (e) { return e.from + '-' + e.to + ' (' + e.weight + ')'; }).join('') + 'Total weight = ' + total);
+      setText('mstSteps', steps.join(''));
+    }
+
+    function runNeuralNetwork() {
+      var x1 = Number(document.getElementById('nnX1').value);
+      var x2 = Number(document.getElementById('nnX2').value);
+      var w11 = Number(document.getElementById('nnW11').value);
+      var w12 = Number(document.getElementById('nnW12').value);
+      var b1 = Number(document.getElementById('nnB1').value);
+      var w21 = Number(document.getElementById('nnW21').value);
+      var w22 = Number(document.getElementById('nnW22').value);
+      var b2 = Number(document.getElementById('nnB2').value);
+      var wo1 = Number(document.getElementById('nnWO1').value);
+      var wo2 = Number(document.getElementById('nnWO2').value);
+      var bo = Number(document.getElementById('nnBO').value);
+      var activation = document.getElementById('nnActivation').value;
+
+      var z1 = x1 * w11 + x2 * w12 + b1;
+      var h1 = applyActivation(activation, z1);
+      var z2 = x1 * w21 + x2 * w22 + b2;
+      var h2 = applyActivation(activation, z2);
+      var zo = h1 * wo1 + h2 * wo2 + bo;
+      var output = sigmoid(zo);
+      var predictedClass = output >= 0.5 ? 1 : 0;
+
+      var steps = [];
+      steps.push('Hidden neuron 1 pre-activation: z1 = ' + z1.toFixed(4));
+      steps.push('Hidden neuron 1 activation: h1 = ' + activation + '(z1) = ' + h1.toFixed(4));
+      steps.push('Hidden neuron 2 pre-activation: z2 = ' + z2.toFixed(4));
+      steps.push('Hidden neuron 2 activation: h2 = ' + activation + '(z2) = ' + h2.toFixed(4));
+      steps.push('Output pre-activation: zo = ' + zo.toFixed(4));
+      steps.push('Final output probability = sigmoid(zo) = ' + output.toFixed(4));
+      steps.push('Predicted class = ' + predictedClass);
+
+      setText('nnOutput', 'Hidden outputs: [' + h1.toFixed(4) + ', ' + h2.toFixed(4) + '] Output probability: ' + output.toFixed(4) + 'Predicted class: ' + predictedClass);
+      setText('nnSteps', steps.join(''));
+    }
+
+    function renderStack() {
+      var display = stackData.length ? '[' + stackData.join(', ') + ']' : '[empty]';
+      setText('stackOutput', 'Stack contents: ' + display + 'Top: ' + (stackData.length ? stackData[stackData.length - 1] : 'none'));
+      setText('stackSteps', stackHistory.join(''));
+    }
+
+    function stackPush() {
+      var value = document.getElementById('stackValue').value;
+      stackData.push(value);
+      stackHistory.push('Push ' + value + ' -> [' + stackData.join(', ') + ']');
+      renderStack();
+    }
+
+    function stackPop() {
+      if (!stackData.length) stackHistory.push('Pop attempted on empty stack');
+      else stackHistory.push('Pop ' + stackData.pop() + ' -> [' + stackData.join(', ') + ']');
+      renderStack();
+    }
+
+    function renderQueue() {
+      var display = queueData.length ? '[' + queueData.join(', ') + ']' : '[empty]';
+      setText('queueOutput', 'Queue contents: ' + display + 'Front: ' + (queueData.length ? queueData[0] : 'none'));
+      setText('queueSteps', queueHistory.join(''));
+    }
+
+    function queueEnqueue() {
+      var value = document.getElementById('queueValue').value;
+      queueData.push(value);
+      queueHistory.push('Enqueue ' + value + ' -> [' + queueData.join(', ') + ']');
+      renderQueue();
+    }
+
+    function queueDequeue() {
+      if (!queueData.length) queueHistory.push('Dequeue attempted on empty queue');
+      else queueHistory.push('Dequeue ' + queueData.shift() + ' -> [' + queueData.join(', ') + ']');
+      renderQueue();
+    }
+
+    function renderLinkedList() {
+      var display = linkedListData.length ? linkedListData.join(' -> ') + ' -> null' : 'null';
+      setText('listOutput', 'Linked list: ' + display);
+      setText('listSteps', linkedListHistory.join(''));
+    }
+
+    function listAppend() {
+      var value = document.getElementById('listValue').value;
+      linkedListData.push(value);
+      linkedListHistory.push('Append node ' + value + ' -> ' + linkedListData.join(' -> ') + ' -> null');
+      renderLinkedList();
+    }
+
+    function listRemoveHead() {
+      if (!linkedListData.length) linkedListHistory.push('Remove head attempted on empty list');
+      else linkedListHistory.push('Removed head ' + linkedListData.shift() + ' -> ' + (linkedListData.length ? linkedListData.join(' -> ') + ' -> null' : 'null'));
+      renderLinkedList();
+    }
+
+    function createBstNode(value) {
+      return { value: value, left: null, right: null };
+    }
+
+    function bstInsert(node, value) {
+      if (node === null) return createBstNode(value);
+      if (value < node.value) node.left = bstInsert(node.left, value);
+      else if (value > node.value) node.right = bstInsert(node.right, value);
+      return node;
+    }
+
+    function inorder(node, result) {
+      if (!node) return;
+      inorder(node.left, result);
+      result.push(node.value);
+      inorder(node.right, result);
+    }
+
+    function preorder(node, result) {
+      if (!node) return;
+      result.push(node.value);
+      preorder(node.left, result);
+      preorder(node.right, result);
+    }
+
+    function postorder(node, result) {
+      if (!node) return;
+      postorder(node.left, result);
+      postorder(node.right, result);
+      result.push(node.value);
+    }
+
+    function renderBST() {
+      var inRes = [];
+      var preRes = [];
+      var postRes = [];
+      inorder(bstRoot, inRes);
+      preorder(bstRoot, preRes);
+      postorder(bstRoot, postRes);
+      setText('bstOutput', 'Inorder: ' + (inRes.length ? inRes.join(', ') : '[empty]') + 'Preorder: ' + (preRes.length ? preRes.join(', ') : '[empty]') + 'Postorder: ' + (postRes.length ? postRes.join(', ') : '[empty]'));
+      setText('bstSteps', bstHistory.join(''));
+    }
+
+    function bstInsertValue() {
+      var value = Number(document.getElementById('bstValue').value);
+      if (isNaN(value)) bstHistory.push('Invalid BST value');
+      else {
+        bstRoot = bstInsert(bstRoot, value);
+        bstHistory.push('Insert ' + value + ' into BST');
+      }
+      renderBST();
+    }
+
+    function bstReset() {
+      bstRoot = null;
+      bstHistory = ['Reset BST'];
+      renderBST();
+    }
+
+    function simpleHash(key) {
+      var sum = 0;
+      for (var i = 0; i < key.length; i++) sum += key.charCodeAt(i);
+      return sum % hashTable.length;
+    }
+
+    function renderHashTable(message) {
+      var buckets = hashTable.map(function (bucket, idx) {
+        var content = bucket.length ? bucket.map(function (pair) { return pair.key + ':' + pair.value; }).join(', ') : 'empty';
+        return 'Bucket ' + idx + ': ' + content;
+      }).join('');
+      setText('hashOutput', (message ? message + '' : '') + buckets);
+      setText('hashSteps', hashHistory.join(''));
+    }
+
+    function hashInsert() {
+      var key = document.getElementById('hashKey').value;
+      var value = document.getElementById('hashValue').value;
+      var index = simpleHash(key);
+      var bucket = hashTable[index];
+      var updated = false;
+      for (var i = 0; i < bucket.length; i++) {
+        if (bucket[i].key === key) {
+          bucket[i].value = value;
+          updated = true;
+          break;
+        }
+      }
+      if (!updated) bucket.push({ key: key, value: value });
+      hashHistory.push((updated ? 'Update' : 'Insert') + ' key "' + key + '" in bucket ' + index);
+      renderHashTable('Stored key "' + key + '" with value "' + value + '" at bucket ' + index + '.');
+    }
+
+    function hashLookup() {
+      var key = document.getElementById('hashKey').value;
+      var index = simpleHash(key);
+      var bucket = hashTable[index];
+      var found = null;
+      for (var i = 0; i < bucket.length; i++) {
+        if (bucket[i].key === key) {
+          found = bucket[i].value;
+          break;
+        }
+      }
+      hashHistory.push('Lookup key "' + key + '" in bucket ' + index + (found !== null ? ' -> found' : ' -> not found'));
+      renderHashTable(found !== null ? 'Lookup result: ' + key + ' = ' + found : 'Lookup result: key not found.');
+    }
+    function TOY() {
+    this.R = new Array(16).fill(0);
+    this.M = new Array(256).fill(0);
+    this.PC = 0;
+    this.halted = false;
+    }
+
+    TOY.prototype.loadProgram = function(program) {
+    var i;
+    this.R = new Array(16).fill(0);
+    this.M = new Array(256).fill(0);
+    this.PC = 0;
+    this.halted = false;
+    for (i = 0; i < program.length && i < 256; i++) {
+        this.M[i] = program[i] & 0xFFFF;
+    }
+    };
+
+    TOY.prototype.signedValue = function(val) {
+    return val > 32767 ? val - 65536 : val;
+    };
+
+    TOY.prototype.hex4 = function(val) {
+    var s = (val & 0xFFFF).toString(16).toUpperCase();
+    while (s.length < 4) s = "0" + s;
+    return s;
+    };
+
+    TOY.prototype.step = function() {
+    if (this.halted) return "Machine already halted.";
+
+    var currentPC = this.PC;
+    var IR = this.M[this.PC] & 0xFFFF;
+    this.PC = (this.PC + 1) % 256;
+
+    var op = (IR >> 12) & 0xF;
+    var d = (IR >> 8) & 0xF;
+    var s = (IR >> 4) & 0xF;
+    var t = IR & 0xF;
+    var addr = IR & 0xFF;
+
+    var msg = "PC=" + currentPC +
+                " IR=0x" + this.hex4(IR) +
+                " op=" + op +
+                " d=" + d +
+                " s=" + s +
+                " t=" + t +
+                " addr=" + addr;
+
+    switch (op) {
+        case 0:
+        this.halted = true;
+        msg += " -> HALT";
+        break;
+        case 1:
+        this.R[d] = (this.R[s] + this.R[t]) & 0xFFFF;
+        msg += " -> R" + d + " = R" + s + " + R" + t;
+        break;
+        case 2:
+        this.R[d] = (this.R[s] - this.R[t]) & 0xFFFF;
+        msg += " -> R" + d + " = R" + s + " - R" + t;
+        break;
+        case 3:
+        this.R[d] = (this.R[s] & this.R[t]) & 0xFFFF;
+        msg += " -> R" + d + " = R" + s + " AND R" + t;
+        break;
+        case 4:
+        this.R[d] = (this.R[s] ^ this.R[t]) & 0xFFFF;
+        msg += " -> R" + d + " = R" + s + " XOR R" + t;
+        break;
+        case 5:
+        this.R[d] = (this.R[s] << (this.R[t] & 0xF)) & 0xFFFF;
+        msg += " -> R" + d + " = R" + s + " << R" + t;
+        break;
+        case 6:
+        this.R[d] = (this.signedValue(this.R[s]) >> (this.R[t] & 0xF)) & 0xFFFF;
+        msg += " -> R" + d + " = signed(R" + s + ") >> R" + t;
+        break;
+        case 7:
+        this.R[d] = addr & 0xFFFF;
+        msg += " -> R" + d + " = " + addr;
+        break;
+        case 8:
+        this.R[d] = this.M[addr] & 0xFFFF;
+        msg += " -> R" + d + " = M[" + addr + "]";
+        break;
+        case 9:
+        this.M[addr] = this.R[d] & 0xFFFF;
+        msg += " -> M[" + addr + "] = R" + d;
+        break;
+        case 10:
+        this.R[d] = this.M[this.R[t] % 256] & 0xFFFF;
+        msg += " -> R" + d + " = M[R" + t + " mod 256]";
+        break;
+        case 11:
+        this.M[this.R[t] % 256] = this.R[d] & 0xFFFF;
+        msg += " -> M[R" + t + " mod 256] = R" + d;
+        break;
+        case 12:
+        if (this.signedValue(this.R[d]) === 0) {
+            this.PC = addr;
+            msg += " -> branch taken to " + addr;
+        } else {
+            msg += " -> branch not taken";
+        }
+        break;
+        case 13:
+        if (this.signedValue(this.R[d]) > 0) {
+            this.PC = addr;
+            msg += " -> branch taken to " + addr;
+        } else {
+            msg += " -> branch not taken";
+        }
+        break;
+        case 14:
+        this.PC = this.R[d] % 256;
+        msg += " -> PC = R" + d + " mod 256";
+        break;
+        case 15:
+        var temp = this.PC;
+        this.PC = addr;
+        this.R[d] = temp & 0xFFFF;
+        msg += " -> call/jump, R" + d + " = " + temp + ", PC = " + addr;
+        break;
+        default:
+        this.halted = true;
+        msg += " -> invalid opcode, halt";
+        break;
+    }
+
+    this.R[0] = 0;
+    return msg;
+    };
+
+    function parseTOYProgram(text) {
+    var tokens = text
+        .replace(/,/g, " ")
+        .split(/\s+/)
+        .map(function(x) { return x.trim(); })
+        .filter(function(x) { return x.length > 0; });
+
+    var program = [];
+    var i;
+
+    for (i = 0; i < tokens.length; i++) {
+        var token = tokens[i].toUpperCase();
+        if (token.indexOf("0X") === 0) token = token.substring(2);
+        var value = parseInt(token, 16);
+        if (!isNaN(value)) {
+        program.push(value & 0xFFFF);
+        }
+    }
+
+    return program;
+    }
+
+    function renderTOY(message) {
+    if (!toyMachine) {
+        setText("toyOutput", "TOY machine not initialized.");
+        setText("toySteps", toyHistory.join("\n"));
+        return;
+    }
+
+    var inspectAddr = Number(document.getElementById("toyInspectAddr").value);
+    if (isNaN(inspectAddr) || inspectAddr < 0 || inspectAddr > 255) {
+        inspectAddr = 10;
+    }
+
+    var regLines = toyMachine.R.map(function(v, i) {
+        return "R" + i + "=" + toyMachine.hex4(v);
+    });
+
+    var memoryWindow = [];
+    var start = Math.max(0, inspectAddr - 2);
+    var end = Math.min(255, inspectAddr + 2);
+    var a;
+
+    for (a = start; a <= end; a++) {
+        memoryWindow.push("M[" + a + "]=" + toyMachine.hex4(toyMachine.M[a]));
+    }
+
+    var output = "";
+    if (message) output += message + "\n\n";
+    output += "PC=" + toyMachine.PC + "\n";
+    output += "Halted=" + toyMachine.halted + "\n\n";
+    output += "Registers:\n" + regLines.join("  ") + "\n\n";
+    output += "Memory near address " + inspectAddr + ":\n" + memoryWindow.join("\n");
+
+    setText("toyOutput", output);
+    setText("toySteps", toyHistory.join("\n"));
+    }
+
+    function resetTOYProgram() {
+    toyMachine = new TOY();
+    toyHistory = [];
+    var program = parseTOYProgram(document.getElementById("toyProgram").value);
+    toyMachine.loadProgram(program);
+    toyHistory.push("Program loaded with " + program.length + " word(s).");
+    renderTOY("Machine reset.");
+    }
+
+    function stepTOYProgram() {
+    if (!toyMachine) resetTOYProgram();
+    var stepMessage = toyMachine.step();
+    toyHistory.push(stepMessage);
+    renderTOY("Executed one step.");
+    }
+
+    function runTOYProgram() {
+    resetTOYProgram();
+    var maxSteps = Number(document.getElementById("toyMaxSteps").value);
+    if (isNaN(maxSteps) || maxSteps < 1) maxSteps = 50;
+
+    var count = 0;
+    while (!toyMachine.halted && count < maxSteps) {
+        toyHistory.push(toyMachine.step());
+        count++;
+    }
+
+    if (!toyMachine.halted) {
+        toyHistory.push("Stopped after reaching max step limit of " + maxSteps + ".");
+    }
+
+    renderTOY("Program run complete after " + count + " step(s).");
+    }
+    runBubbleSort();
+    runBinarySearch();
+    runFibonacci();
+    runKMP();
+    runLinearRegression();
+    runLogisticDemo();
+    runDijkstra();
+    runKruskal();
+    runNeuralNetwork();
+    renderStack();
+    renderQueue();
+    renderLinkedList();
+    renderBST();
+    renderHashTable('');
+    resetTOYProgram();
+  </script>
+</body>
+</html>
